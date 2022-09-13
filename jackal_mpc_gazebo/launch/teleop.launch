@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- based on launch file from http://wiki.ros.org/stdr_simulator/Tutorials/Teleop%20with%20teleop_twist_keyboard -->
+
+<launch>
+    <node pkg="gazebo_terrain" type="teleop.py" name="teleop">
+        <remap from="~cmd_vel" to="cmd_vel"/>
+    </node>
+</launch>

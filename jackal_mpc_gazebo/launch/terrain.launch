@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="world_name" default="terrain"/>
+
+  <!-- Robot pose -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+  
+  <!-- Short-term hack to support the original front_laser:=true argument for spawning
+       the simulator. This will be removed in favour of using the config:=x arg instead. -->
+  <arg name="front_laser" default="false" />
+  <arg name="default_config" value="front_laser" if="$(arg front_laser)" />
+  <arg name="default_config" value="base" unless="$(arg front_laser)" />
+  <!-- end of hack -->
+
+  <!-- Configuration of Jackal which you would like to simulate.
+       See jackal_description for details. -->
+  <arg name="config" default="$(arg default_config)" />
+  <arg name="env_runner" value="$(eval 'env_run' if not optenv('OS', 'unknown').lower().startswith('windows') else 'env_run.bat')" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find jackal_mpc_gazebo)/worlds/terrain.world"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+
+  <!-- Convert an xacro to URDF and put on parameter server -->
+  <param name="robot_description"
+         command="$(find jackal_description)/scripts/$(arg env_runner)
+                    $(find jackal_description)/urdf/configs/$(arg config)
+                    $(find xacro)/xacro $(find jackal_description)/urdf/jackal.urdf.xacro
+                    --inorder" />
+  
+  
+  <!-- Spawn the robot from the URDF that was loaded into the robot_description
+       parameter -->
+  <node name="urdf_spawner"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-urdf -model jackal -param robot_description
+              -x $(arg x) -y $(arg y) -z $(arg z)
+              -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+
+  <include file="$(find jackal_control)/launch/control.launch" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+
+     <!-- Publish tf 'base_footprint' as pose.-->
+  <node pkg="jackal_mpc_perception" type="tf_to_pose_publisher.py" name="robot_pose_publisher">
+    <param name="from_frame" type="string" value="odom"/>
+    <param name="to_frame" type="string" value="base_link"/>
+  </node>
+
+  <!-- Run a passthrough filter to down-sample the sensor point cloud.-->
+  <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="voxel_grid" args="load pcl/VoxelGrid pcl_manager" output="screen">
+    <remap from="~input" to="/camera/depth/points"/>
+    <remap from="~output" to="/camera/depth/points_downsampled"/>
+    <rosparam>
+      filter_field_name: z
+      filter_limit_min: 0.01
+      filter_limit_max: 4.0  <!-- Limit the range of points to forward to 6 meters in viewing direction-->
+      filter_limit_negative: False
+      leaf_size: 0.05  <!-- Limit the density to 5 cm-->
+    </rosparam>
+  </node>
+
+  <!-- Launch elevation mapping node. -->
+  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+    <rosparam command="load" file="$(find jackal_mpc_perception)/config/robot/jackal_bot.yaml"/>
+    <rosparam command="load" file="$(find elevation_mapping)/config/sensor_processors/realsense_d435.yaml" />
+    <rosparam command="load" file="$(find elevation_mapping_demos)/config/elevation_maps/long_range.yaml" />
+    <rosparam command="load" file="$(find jackal_mpc_perception)/config/postprocessing/postprocessor_pipeline.yaml"/>
+  </node>
+  
+  <!-- Launch the plane decomposition node. -->
+  <include file="$(find convex_plane_decomposition_ros)/launch/convex_plane_decomposition.launch"/>
+
+  <!-- Launch RViz with the demo configuration -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find jackal_mpc_gazebo)/rviz/elevation_mapping.rviz"/>
+
+</launch>
