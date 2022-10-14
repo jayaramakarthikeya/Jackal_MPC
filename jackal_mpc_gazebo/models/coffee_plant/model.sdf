@@ -11,7 +11,7 @@
 	<material>
           <script>
             <uri>model://coffee_plant/media/scripts</uri>
-            <uri>model://coffee_plant/media/textures</uri>
+            <uri>model://coffee_plant/media/Textures</uri>
             <name>RepeatedLeaf/Diffuse</name>
           </script>
         </material>
