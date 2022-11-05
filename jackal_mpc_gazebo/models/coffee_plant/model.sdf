@@ -1,26 +1,85 @@
-<?xml version="1.0" ?>
-<sdf version="1.5">
-  <model name="coffee_plant">
-    <pose>0 0 0 0 0 0</pose>
-    <static>true</static>
-    <link name="body">
-      <visual name="visual">
+<?xml version="1.0"?>
+<sdf version='1.7'>
+  <model name='coffee_plant'>
+    <link name='base_link'>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>2</mass>
+        <inertia>
+          <ixx>2</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2</iyy>
+          <iyz>0</iyz>
+          <izz>2</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_fixed_joint_lump__coffee_plant_tree_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
         <geometry>
-          <mesh><uri>model://coffee_plant/media/coffee_plant.dae</uri></mesh>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://coffee_plant/meshes/coffee_plant_tree.dae</uri>
+          </mesh>
         </geometry>
-	<material>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__coffee_plant_leaves_link_collision_1'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://coffee_plant/meshes/coffee_plant_leaves.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='base_link_fixed_joint_lump__coffee_plant_tree_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://coffee_plant/meshes/coffee_plant_tree.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
           <script>
-            <uri>model://coffee_plant/media/scripts</uri>
-            <uri>model://coffee_plant/media/Textures</uri>
-            <name>RepeatedLeaf/Diffuse</name>
+            <name>Gazebo/Wood</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
           </script>
         </material>
       </visual>
-      <collision name="collision">
+      <visual name='base_link_fixed_joint_lump__coffee_plant_leaves_link_visual_1'>
+        <pose>0 0 0 0 -0 0</pose>
         <geometry>
-          <mesh><uri>model://coffee_plant/media/coffee_plant.dae</uri></mesh>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://coffee_plant/meshes/coffee_plant_leaves.dae</uri>
+          </mesh>
         </geometry>
-      </collision>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>1</gravity>
     </link>
+    <static>1</static>
   </model>
 </sdf>

@@ -19,8 +19,6 @@
   <arg name="default_config" value="base" unless="$(arg front_laser)" />
   <!-- end of hack -->
 
-  <!-- Configuration of Jackal which you would like to simulate.
-       See jackal_description for details. -->
   <arg name="config" default="$(arg default_config)" />
   <arg name="env_runner" value="$(eval 'env_run' if not optenv('OS', 'unknown').lower().startswith('windows') else 'env_run.bat')" />
 
@@ -48,6 +46,8 @@
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
 
   <include file="$(find jackal_control)/launch/control.launch" />
+  
+  
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
@@ -57,6 +57,8 @@
     <param name="from_frame" type="string" value="odom"/>
     <param name="to_frame" type="string" value="base_link"/>
   </node>
+  
+
 
   <!-- Run a passthrough filter to down-sample the sensor point cloud.-->
   <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen"/>
@@ -66,7 +68,7 @@
     <rosparam>
       filter_field_name: z
       filter_limit_min: 0.01
-      filter_limit_max: 4.0  <!-- Limit the range of points to forward to 6 meters in viewing direction-->
+      filter_limit_max: 2.0  <!-- Limit the range of points to forward to 2 meters in viewing direction-->
       filter_limit_negative: False
       leaf_size: 0.05  <!-- Limit the density to 5 cm-->
     </rosparam>
@@ -84,6 +86,6 @@
   <include file="$(find convex_plane_decomposition_ros)/launch/convex_plane_decomposition.launch"/>
 
   <!-- Launch RViz with the demo configuration -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find jackal_mpc_gazebo)/rviz/elevation_mapping.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find jackal_mpc_gazebo)/rviz/terrain.rviz"/>
 
 </launch>

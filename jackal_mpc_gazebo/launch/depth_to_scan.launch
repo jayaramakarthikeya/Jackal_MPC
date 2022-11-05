@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"></include>  
+ <!-- Depth Image to Laser Scan Node -->
+  <node name="depthimage_to_laserscan" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" args="">
+
+    <remap from="image"       to="/camera/depth/image_raw"/> <!-- change here for your camera depth topic name. Default: "/camera/depth/image_raw" -->
+
+     <!--The topic of outputting laser data-->
+    <remap from="scan" to="/scan" /> 
+         <!--The number of pixel lines used to generate the laser scan. For each column, the scan will return the minimum value of those pixels vertically centered in the image. -->
+    <param name="scan_height" value="10"/>
+         <!--Time between scans (seconds). Normally, 1.0/frame_rate. This value is not easily calculated from consecutive messages, so it is left to the user to set it correctly. -->
+　　　　<param name="scan_time" value="0.03"/>
+         <!--The minimum range returned (in meters). Outputs smaller than this range will be output as -Inf. -->
+    <param name="range_min" value="0.45"/>
+         <!--The maximum range returned (in meters). Greater than this range will be output as +Inf. -->
+    <param name="range_max" value="8.00"/>
+
+	
+  </node>
+  
+</launch>
