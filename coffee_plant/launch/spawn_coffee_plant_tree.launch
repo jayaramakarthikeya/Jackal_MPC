@@ -1,0 +1,5 @@
+<launch>
+  <param name="coffee_plant_tree_description" command="$(find xacro)/xacro --inorder '$(find coffee_plant)/urdf/coffee_plant_tree.urdf.xacro'" />
+
+  <node name="spawn_coffee_plant_tree" pkg="gazebo_ros" type="spawn_model" args="-param coffee_plant_tree_description -urdf -model coffee_plant_tree" respawn="false" />
+</launch>

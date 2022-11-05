@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<robot name="coffee_plant">
+
+ <link name="base_link"></link>
+ 
+ <joint name="base_link_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="coffee_plant_tree_link" />
+  </joint>
+ 
+ <link name="coffee_plant_tree_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://coffee_plant/meshes/coffee_plant_tree.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://coffee_plant/meshes/coffee_plant_tree.dae" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="coffee_plant_tree_link_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="coffee_plant_tree_link"/>
+    <child link="coffee_plant_leaves_link" />
+  </joint>
+  
+   <link name="coffee_plant_leaves_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1" />
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://coffee_plant/meshes/coffee_plant_leaves.dae" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://coffee_plant/meshes/coffee_plant_leaves.dae" />
+      </geometry>
+    </collision>
+  </link>
+  
+  <gazebo reference="coffee_plant_leaves_link">
+    <material>Gazebo/Green</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  
+  <gazebo reference="coffee_plant_tree_link">
+    <material>Gazebo/Wood</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo> <static>true</static></gazebo>
+</robot>

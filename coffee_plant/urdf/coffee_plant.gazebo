@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<robot>
+
+<gazebo reference="coffee_plant_link">
+    <material>Gazebo/Green</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  
+</robot>
