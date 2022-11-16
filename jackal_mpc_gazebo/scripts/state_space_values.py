@@ -18,7 +18,7 @@ def write_to_csv():
         writer.writeheader()
 
 def odom_callback(odom):
-    global x, y, phi
+    global x, y, yaw
     x = odom.pose.pose.position.x
     y = odom.pose.pose.position.y
     orientation = odom.pose.pose.orientation
