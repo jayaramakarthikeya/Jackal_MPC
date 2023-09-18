@@ -24,7 +24,7 @@ def odom_callback(odom):
     orientation = odom.pose.pose.orientation
     quaternion = [orientation.x,orientation.y,orientation.z,orientation.w]
     [_,_,yaw] = euler_from_quaternion(quaternion)
-    rospy.loginfo("X = "+str(x)+"Y = "+str(y)+"Phi = "+str(yaw))
+    rospy.loginfo("X = "+str(x)+"Y = "+str(y)+"Phi = "+str(yaw),"")
 
     
 
